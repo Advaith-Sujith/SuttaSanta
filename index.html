@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1e16">
+<title>SuttaSanta — Secret Santa, but smokier</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap');
+:root{--bg:#0b1e16;--bg2:#10271d;--panel:#142d22;--panel2:#183528;--ink:#f5edda;--muted:#a5b2a3;--red:#bd453a;--red2:#e0614d;--gold:#e8bd73;--line:#355344;--green:#244b39;--shadow:0 22px 70px #0006}
+*{box-sizing:border-box}html{min-height:100%;scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -20%,#264b36 0%,transparent 56%),linear-gradient(160deg,#0c2118,#081810 70%);color:var(--ink);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+body:before,body:after{content:"";position:fixed;inset:-120% 0 0;pointer-events:none;z-index:0;background-image:radial-gradient(2px 2px at 20px 30px,#fff9 50%,transparent 55%),radial-gradient(1px 1px at 90px 80px,#fff8 50%,transparent 55%),radial-gradient(1.5px 1.5px at 160px 140px,#fff7 50%,transparent 55%),radial-gradient(2px 2px at 230px 50px,#fff8 50%,transparent 55%);background-size:270px 190px;animation:snowFall 24s linear infinite;opacity:.44}
+body:after{background-size:360px 260px;animation-duration:36s;animation-direction:reverse;opacity:.24;filter:blur(.5px)}
+@keyframes snowFall{to{transform:translateY(65%)}}
+.wrap{max-width:820px;margin:auto;padding:26px 22px 64px;position:relative;z-index:1}
+nav{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ffffff1b;padding-bottom:16px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:-.7px;font-size:20px}.brand-mark{width:56px;height:56px;display:grid;place-items:center;filter:drop-shadow(0 5px 14px #0008);transition:transform .35s}.brand:hover .brand-mark{transform:rotate(-7deg) scale(1.06)}.brand small{display:block;font:9px 'DM Mono';letter-spacing:2px;color:#b5c4b4;margin-top:3px}
+.navtag{font:10px 'DM Mono';letter-spacing:1.4px;color:#b1bda9;border:1px solid #ffffff22;border-radius:30px;padding:9px 13px;background:#ffffff08}
+.hero{text-align:center;padding:48px 0 30px;animation:heroIn .8s both}.eyebrow{font:10px 'DM Mono';letter-spacing:2.5px;color:var(--gold);text-transform:uppercase}
+h1{font:800 clamp(42px,8vw,66px) 'Playfair Display',serif;letter-spacing:-2px;margin:12px 0 7px;line-height:1.03;text-shadow:0 5px 30px #0005}.hero h1 span{color:#e16a58}.hero p{color:#bac5b5;font-size:14px;line-height:1.7;max-width:445px;margin:13px auto 0}
+@keyframes heroIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.panel{position:relative;overflow:hidden;background:linear-gradient(145deg,#183528f2,#10271ef5);border:1px solid #66816a55;border-radius:20px;padding:27px;box-shadow:var(--shadow),inset 0 1px #ffffff0b;animation:panelIn .65s cubic-bezier(.2,.8,.2,1) both;transition:transform .3s,border-color .3s,box-shadow .3s}
+.panel:before{content:"";position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#e8bd7380,transparent)}
+.panel:hover{border-color:#91a98277;box-shadow:0 26px 80px #0008,inset 0 1px #ffffff12}
+@keyframes panelIn{from{opacity:0;transform:translateY(22px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:10px}.panel-head h2{font:600 22px 'Playfair Display';margin:0}.step{font:10px 'DM Mono';color:var(--gold);letter-spacing:1.3px;white-space:nowrap}
+label{display:block;font-size:12px;font-weight:700;color:#e9e2d0;margin:17px 0 8px}
+input,textarea{width:100%;border:1px solid #52705c;border-radius:10px;background:#0b1d15;color:var(--ink);padding:13px 14px;font:14px 'DM Sans';outline:none;transition:border-color .22s,box-shadow .22s,background .22s}
+input::placeholder,textarea::placeholder{color:#839487}input:focus,textarea:focus{border-color:var(--gold);background:#10271d;box-shadow:0 0 0 3px #e8bd7320}
+textarea{min-height:145px;resize:vertical;line-height:1.8}.hint{font-size:11px;color:#a8b5a7;margin-top:7px;line-height:1.6}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;border:1px solid #3c5d49;background:#0d2118a8;padding:13px 14px;border-radius:11px;margin-top:18px;transition:background .25s,border-color .25s}.toggle-row:hover{background:#183527;border-color:#71916f}
+.toggle-copy strong{font-size:13px;display:block}.toggle-copy span{font-size:11px;color:#a8b5a7}
+.switch{appearance:none;width:42px;height:24px;background:#526253;border-radius:20px;position:relative;cursor:pointer;transition:.25s;margin:0;flex:none;padding:0;border:0}
+.switch:checked{background:var(--red)}.switch:before{content:"";position:absolute;width:18px;height:18px;background:#fff5e5;border-radius:50%;top:3px;left:3px;transition:.25s;box-shadow:0 2px 6px #0004}.switch:checked:before{left:21px}
+.btn{position:relative;overflow:hidden;border:1px solid #f17a5b55;border-radius:10px;background:linear-gradient(130deg,#a8322e,#d24d3e);color:#fff8e9;padding:14px 18px;font:700 13px 'DM Sans';letter-spacing:.2px;cursor:pointer;width:100%;margin-top:22px;transition:transform .22s,box-shadow .22s,filter .22s;box-shadow:0 9px 22px #a8322e33,inset 0 1px #ffffff38}
+.btn:before{content:"";position:absolute;inset:0;transform:translateX(-110%);background:linear-gradient(105deg,transparent 30%,#ffffff30 50%,transparent 70%);transition:transform .55s}.btn:hover:before{transform:translateX(110%)}.btn:hover{transform:translateY(-3px);box-shadow:0 13px 30px #b33b304d;filter:brightness(1.08)}.btn:active{transform:translateY(-1px) scale(.995)}.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn.secondary{background:#ffffff08;color:#f2e8d2;border:1px solid #52705c;box-shadow:none;margin-top:10px}.btn.secondary:hover{background:#ffffff12;border-color:var(--gold)}
+.error{color:#ff9b89;font-size:12px;margin-top:12px;min-height:16px}
+.hidden{display:none!important}
+.list{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:16px 0}.person{border:1px solid #385943;background:#0d211a9c;border-radius:10px;padding:12px 13px;font-size:13px;display:flex;gap:10px;align-items:center;min-width:0;animation:tileIn .45s both;animation-delay:calc(var(--i,0)*55ms);transition:transform .22s,border-color .22s,background .22s,box-shadow .22s}.person:hover{transform:translateY(-3px) scale(1.01);border-color:#bd9860;background:#1a3a2a;box-shadow:0 8px 18px #0003}.dot{width:7px;height:7px;background:#db6452;border-radius:50%;box-shadow:0 0 9px #db645288;flex:none}
+@keyframes tileIn{from{opacity:0;transform:translateY(9px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.linkrow{display:flex;gap:8px;align-items:center;margin-top:10px;animation:tileIn .45s both;animation-delay:calc(var(--i,0)*45ms)}.linkrow input{font:11px 'DM Mono';padding:11px;min-width:0;background:#0a1a13}.copy{background:#e8bd73;color:#2c2114;border:0;border-radius:8px;padding:11px 13px;font-size:10px;font-weight:700;letter-spacing:.6px;cursor:pointer;transition:transform .2s,filter .2s}.copy:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.player-card{text-align:center;padding:34px 24px}.present{font-size:45px;margin:8px 0 18px;display:inline-block;filter:drop-shadow(0 7px 15px #e8bd7344);animation:giftBob 3s ease-in-out infinite}.player-card h2{font:700 30px 'Playfair Display';margin:8px 0;color:#fff3dc}.player-card p{font-size:13px;color:#b1bfaf;line-height:1.7}.player-card .list{text-align:left}
+@keyframes giftBob{50%{transform:translateY(-7px) rotate(3deg)}}
+.notice{font:10px 'DM Mono';color:#b4bfae;letter-spacing:.9px;margin-top:20px}
+footer{text-align:center;color:#778a79;font:10px 'DM Mono';letter-spacing:1px;margin-top:28px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,15px);background:#f0dfbd;color:#1b2b20;padding:11px 16px;border-radius:9px;font-size:12px;font-weight:700;opacity:0;transition:.25s;pointer-events:none;z-index:30;box-shadow:0 8px 25px #0005}.toast.show{opacity:1;transform:translate(-50%,0)}
+/* Secret assignment reveal */
+.modal{position:fixed;inset:0;display:grid;place-items:center;padding:20px;background:#020b07c9;backdrop-filter:blur(9px);z-index:20;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}.modal.open{opacity:1;visibility:visible}.modal-card{position:relative;width:min(100%,430px);overflow:hidden;text-align:center;padding:31px 27px 28px;border:1px solid #d7b47788;border-radius:20px;background:radial-gradient(ellipse at 50% 0%,#fff0d525,transparent 50%),linear-gradient(150deg,#fff4dc,#f0dfbd);color:#203728;box-shadow:0 28px 100px #000b,0 0 55px #e7b96c20;transform:translateY(35px) scale(.86) rotate(-2deg);opacity:0;transition:transform .5s cubic-bezier(.18,.9,.25,1.2),opacity .35s}.modal.open .modal-card{transform:translateY(0) scale(1) rotate(0);opacity:1}.modal-card:before{content:"";position:absolute;inset:9px;border:1px dashed #b68b5b88;border-radius:14px;pointer-events:none}.modal-close{position:absolute;right:15px;top:13px;width:34px;height:34px;border:1px solid #b69c75;border-radius:50%;background:#fff8e8;color:#324434;font-size:18px;cursor:pointer;z-index:2;transition:transform .2s,background .2s}.modal-close:hover{transform:rotate(90deg);background:#f6e6c9}.modal-eyebrow{font:10px 'DM Mono';letter-spacing:2px;color:#8d4a38;text-transform:uppercase;margin-top:6px}.modal-title{font:700 29px 'Playfair Display';margin:12px 0 0;color:#203c2b}.modal-sub{font-size:13px;color:#6f7869;margin:8px 0 18px}.gift-wrap{height:104px;display:grid;place-items:center;position:relative}.gift{position:relative;width:77px;height:57px;background:linear-gradient(90deg,#a92e2d,#ca493b);border-radius:5px 5px 8px 8px;box-shadow:0 12px 20px #84352d33;animation:giftPop .65s .1s both}.gift:before{content:"";position:absolute;left:32px;top:0;width:13px;height:100%;background:#e7bd72}.gift:after{content:"";position:absolute;left:-5px;top:-9px;width:87px;height:13px;border-radius:4px;background:#d75a46;border:2px solid #f3d08b}.bow{position:absolute;left:24px;top:-27px;width:30px;height:23px;border:7px solid #b53a35;border-radius:18px 18px 5px 18px;transform:rotate(22deg)}.bow:after{content:"";position:absolute;left:15px;top:-4px;width:27px;height:23px;border:7px solid #b53a35;border-radius:18px 18px 18px 5px;transform:rotate(90deg)}
+.recipient-label{font:11px 'DM Mono';letter-spacing:1.4px;color:#8d5940;margin-top:14px}.recipient-name{font:800 clamp(34px,9vw,48px) 'Playfair Display';color:#a83431;margin:7px 0 10px;overflow-wrap:anywhere;animation:nameReveal .65s .2s both;text-shadow:0 3px 0 #d9b58b}.modal-foot{font-size:12px;color:#687766;line-height:1.6;margin:0 auto 2px;max-width:280px}.modal-action{position:relative;z-index:1;margin-top:19px;border:0;background:#244b39;color:#fff5df;padding:11px 23px;border-radius:9px;font:700 12px 'DM Sans';cursor:pointer;transition:transform .2s,background .2s}.modal-action:hover{transform:translateY(-2px);background:#173828}
+.spark{position:absolute;width:6px;height:6px;background:#d49d49;transform:rotate(45deg);animation:sparkle 1.5s ease-in-out infinite}.spark.s1{top:32%;left:12%}.spark.s2{top:22%;right:15%;animation-delay:.35s}.spark.s3{bottom:26%;left:17%;animation-delay:.7s}.spark.s4{bottom:30%;right:13%;animation-delay:1s}
+@keyframes sparkle{0%,100%{opacity:.25;transform:scale(.6) rotate(45deg)}50%{opacity:1;transform:scale(1.35) rotate(135deg)}}@keyframes giftPop{from{opacity:0;transform:translateY(20px) scale(.6)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes nameReveal{from{opacity:0;transform:scale(.7);filter:blur(8px)}to{opacity:1;transform:scale(1);filter:blur(0)}}
+@media(max-width:540px){.wrap{padding:18px 15px 52px}.panel{padding:21px 17px}.hero{padding:40px 0 25px}.list{grid-template-columns:1fr}.navtag{font-size:8px;letter-spacing:.8px;padding:8px 10px}.modal-card{padding:29px 18px 23px}.brand-mark{width:48px;height:48px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body><div class="wrap">
+<nav><div class="brand"><div class="brand-mark" aria-label="Santa smoking a cigar">
+<svg viewBox="0 0 72 72" width="100%" height="100%" role="img" aria-label="Santa with a cigar">
+<circle cx="36" cy="36" r="34" fill="#8f302c" stroke="#e8bd73" stroke-width="1.5"/>
+<!-- hat --> <path d="M12 31C12 14 28 5 44 10c9 3 15 10 18 19-12 4-26 5-42 13z" fill="#c84439" stroke="#f3d9b6" stroke-width="2"/><path d="M15 29c11-8 29-10 45-1l-2 9c-16-6-32-2-44 5z" fill="#f5e8d0"/><circle cx="13" cy="34" r="7" fill="#fff1d9"/>
+<!-- face --> <ellipse cx="37" cy="37" rx="20" ry="22" fill="#f1c59c"/>
+<!-- beard --> <path d="M17 38c-5 8-1 18 6 21 1 9 8 13 14 9 8 7 17 0 17-8 8-4 9-14 3-21-8 7-29 8-40-1z" fill="#fff1dc" stroke="#d9c6a9" stroke-width="1.5"/><path d="M25 49c6 4 18 4 25 0m-23 8c5 4 13 5 19 1" fill="none" stroke="#d5c0a1" stroke-width="1.4" stroke-linecap="round"/>
+<!-- sunglasses --> <path d="M19 29q9-5 18 0l-2 8q-9 4-14-2zm21 0q9-5 17 0l-2 8q-9 4-14-2z" fill="#17231c" stroke="#d6b36f" stroke-width="1.8"/><path d="M36 30q2-3 5 0" fill="none" stroke="#d6b36f" stroke-width="2"/>
+<!-- cigar --> <path d="M46 43l20-5" stroke="#63351e" stroke-width="6" stroke-linecap="round"/><path d="M63 39l4-1" stroke="#f07b43" stroke-width="4" stroke-linecap="round"/><path d="M58 32c-4-5 5-6 2-12m5 10c-3-4 3-5 1-9" fill="none" stroke="#e7e0d1" stroke-width="1.5" stroke-linecap="round" opacity=".8"/>
+<!-- nose and moustache --> <ellipse cx="40" cy="41" rx="4" ry="3" fill="#e7a982"/><path d="M39 44c-5-5-10-5-14-1-3 3-1 7 3 7 4 0 6-2 9-3 4 3 8 5 12 2 4-3 1-7-3-7-3 0-5 1-7 2z" fill="#fff1dc" stroke="#d9c6a9" stroke-width="1"/>
+</svg></div><div>SuttaSanta<small>SECRET SANTA CLUB</small></div></div><div class="navtag">✦ BUMS ✦</div></nav>
+<header class="hero"><div class="eyebrow">A little festive mischief</div><h1>Ho ho hold<br><span>my cigar.</span></h1><p>One group. One name each. Zero awkward gift exchanges. Let the festive chaos begin.</p></header>
+<section id="hostView" class="panel">
+<div class="panel-head"><h2>Set up your exchange</h2><span class="step">01 / CREATE</span></div>
+<label for="group">Group name</label><input id="group" placeholder="e.g. The Office Goblins" maxlength="50">
+<label for="hostName">Host name</label><input id="hostName" placeholder="Your name" maxlength="40">
+<div class="toggle-row"><div class="toggle-copy"><strong>Host plays too</strong><span>Include yourself in the draw</span></div><input class="switch" type="checkbox" id="hostPlays" checked></div>
+<label for="players">Players' names</label><textarea id="players" placeholder="Alex&#10;Sam&#10;Jamie&#10;Taylor"></textarea><div class="hint">One name per line. The host is added automatically if participating.</div>
+<button class="btn" id="createBtn">Create the chaos ↗</button><div class="error" id="hostError"></div>
+</section>
+<section id="createdView" class="panel hidden">
+<div class="panel-head"><h2>Your exchange is ready</h2><span class="step">02 / SHARE</span></div>
+<p class="hint" id="createdInfo"></p><div class="list" id="peopleList"></div>
+<label>Private individual links</label><div id="links"></div>
+<button class="btn secondary" id="copyAll">Copy all links</button>
+<p class="hint">Send each person only their own link. Each link unlocks that person's assignment automatically — no passcode needed.</p>
+<p class="hint">The link is the key: anyone who has the complete link can open that assignment. Share links privately.</p>
+</section>
+<section id="playerView" class="panel player-card hidden">
+<div class="eyebrow">Your secret assignment</div><div class="present">🎁</div><div class="step" id="playerGroup">ENCRYPTED SECRET SANTA LINK</div><h2 id="hello">A gift is waiting for you.</h2>
+<div id="unlockBox" class="hidden">
+ <p>This is an older encrypted link that requires its original passcode.</p>
+ <label for="passcodeInput" style="text-align:left">Legacy passcode</label>
+ <input id="passcodeInput" type="password" placeholder="Enter the original passcode" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false">
+ <button class="btn" id="unlockBtn">Unlock older assignment →</button>
+ <div class="error" id="unlockError" role="status"></div>
+</div>
+<div id="unlockedContent" class="hidden"><p>Here's the roster. Your recipient is locked behind the button.</p><div class="list" id="playerRoster"></div>
+<button class="btn" id="revealBtn">Reveal my Santa →</button></div>
+<div class="notice">ONE PERSON. ONE PRESENT. NO SNITCHING.</div>
+</section>
+<footer>NO ACCOUNTS · NO SERVER · JUST FESTIVE CHAOS · 🎄</footer>
+</div>
+<div class="modal" id="revealModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+ <div class="modal-card">
+  <button class="modal-close" id="closeModal" aria-label="Close reveal">×</button>
+  <span class="spark s1"></span><span class="spark s2"></span><span class="spark s3"></span><span class="spark s4"></span>
+  <div class="modal-eyebrow">✦ keep it under your hat ✦</div><h2 class="modal-title" id="modalTitle">Your Secret Santa is...</h2><p class="modal-sub">Time to find them something brilliant.</p>
+  <div class="gift-wrap"><div class="gift"><span class="bow"></span></div></div>
+  <div class="recipient-label">YOU'RE GETTING A GIFT FOR</div><div class="recipient-name" id="recipientName"></div>
+  <p class="modal-foot">Don't spill the beans. The fun is in the surprise.</p>
+  <button class="modal-action" id="doneModal">Got it. Mum's the word 🤫</button>
+ </div>
+</div>
+<div class="toast" id="toast">Copied!</div>
+<script>
+const $=id=>document.getElementById(id);
+let generatedLinks=[];
+const PBKDF2_ITERATIONS=600000; // Used only for compatibility with older passcode-protected links.
+
+function toast(msg){
+ $('toast').textContent=msg;$('toast').classList.add('show');
+ setTimeout(()=>$('toast').classList.remove('show'),2200);
+}
+async function copy(text){
+ try{await navigator.clipboard.writeText(text);toast('Copied to clipboard')}
+ catch(e){toast('Copy unavailable — select the text')}
+}
+function show(which){
+ ['hostView','createdView','playerView'].forEach(id=>$(id).classList.toggle('hidden',id!==which));
+}
+function renderRoster(el,names){
+ el.innerHTML='';
+ names.forEach((n,i)=>{
+  const d=document.createElement('div');d.className='person';d.style.setProperty('--i',i);
+  const dot=document.createElement('span');dot.className='dot';
+  d.append(dot,document.createTextNode(n));el.append(d);
+ });
+}
+function openReveal(name){
+ $('recipientName').textContent=name;
+ $('revealModal').classList.add('open');$('revealModal').setAttribute('aria-hidden','false');
+ document.body.style.overflow='hidden';$('closeModal').focus();
+}
+function closeReveal(){
+ $('revealModal').classList.remove('open');$('revealModal').setAttribute('aria-hidden','true');
+ document.body.style.overflow='';
+}
+$('closeModal').addEventListener('click',closeReveal);
+$('doneModal').addEventListener('click',closeReveal);
+$('revealModal').addEventListener('click',e=>{if(e.target===$('revealModal'))closeReveal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('revealModal').classList.contains('open'))closeReveal()});
+
+// Sattolo's shuffle creates one cycle: nobody gets themselves and every
+// participant is assigned exactly once. It runs entirely in this browser.
+function randomInt(max){
+ if(max<=1)return 0;
+ if(window.crypto?.getRandomValues){
+  const limit=Math.floor(0x100000000/max)*max;
+  const a=new Uint32Array(1);
+  do{window.crypto.getRandomValues(a)}while(a[0]>=limit);
+  return a[0]%max;
+ }
+ return Math.floor(Math.random()*max);
+}
+function makeDerangement(names){
+ const recipients=[...names];
+ for(let i=recipients.length-1;i>0;i--){
+  const j=randomInt(i);
+  [recipients[i],recipients[j]]=[recipients[j],recipients[i]];
+ }
+ return recipients;
+}
+function bytesToBase64Url(bytes){
+ let binary='';
+ for(let i=0;i<bytes.length;i++)binary+=String.fromCharCode(bytes[i]);
+ return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function base64UrlToBytes(encoded){
+ if(typeof encoded!=='string'||!/^[A-Za-z0-9_-]+$/.test(encoded))throw new Error('Invalid encrypted link');
+ const padded=encoded.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-encoded.length%4)%4);
+ const binary=atob(padded),bytes=new Uint8Array(binary.length);
+ for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+ return bytes;
+}
+function encodeObject(value){return bytesToBase64Url(new TextEncoder().encode(JSON.stringify(value)))}
+function decodeObject(encoded){return JSON.parse(new TextDecoder().decode(base64UrlToBytes(encoded)))}
+function requireWebCrypto(){
+ if(!window.crypto?.subtle||!window.crypto?.getRandomValues)throw new Error('This browser does not support secure encryption. Open SuttaSanta over HTTPS.');
+}
+async function deriveEncryptionKey(passcode,salt){
+ const material=await crypto.subtle.importKey('raw',new TextEncoder().encode(passcode),'PBKDF2',false,['deriveKey']);
+ return crypto.subtle.deriveKey(
+  {name:'PBKDF2',salt,iterations:PBKDF2_ITERATIONS,hash:'SHA-256'},
+  material,{name:'AES-GCM',length:256},false,['encrypt','decrypt']
+ );
+}
+async function encryptPayload(payload){
+ requireWebCrypto();
+ // Generate a fresh 256-bit AES key for this participant. The key travels
+ // inside that participant's private URL, so there is no separate passcode.
+ const rawKey=crypto.getRandomValues(new Uint8Array(32));
+ const iv=crypto.getRandomValues(new Uint8Array(12));
+ const key=await crypto.subtle.importKey('raw',rawKey,{name:'AES-GCM'},false,['encrypt','decrypt']);
+ const plaintext=new TextEncoder().encode(JSON.stringify(payload));
+ const ciphertext=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,plaintext);
+ return {v:3,k:bytesToBase64Url(rawKey),iv:bytesToBase64Url(iv),ct:bytesToBase64Url(new Uint8Array(ciphertext))};
+}
+async function decryptLinkEnvelope(envelope){
+ requireWebCrypto();
+ if(!envelope||envelope.v!==3||typeof envelope.k!=='string'||typeof envelope.iv!=='string'||typeof envelope.ct!=='string')throw new Error('This encrypted link is invalid.');
+ const rawKey=base64UrlToBytes(envelope.k),iv=base64UrlToBytes(envelope.iv),ciphertext=base64UrlToBytes(envelope.ct);
+ if(rawKey.length!==32||iv.length!==12||ciphertext.length<17)throw new Error('This encrypted link is incomplete or damaged.');
+ const key=await crypto.subtle.importKey('raw',rawKey,{name:'AES-GCM'},false,['decrypt']);
+ const plaintext=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,ciphertext);
+ return JSON.parse(new TextDecoder().decode(plaintext));
+}
+async function decryptEnvelope(envelope,passcode){
+ requireWebCrypto();
+ if(!envelope||envelope.v!==2||typeof envelope.salt!=='string'||typeof envelope.iv!=='string'||typeof envelope.ct!=='string')throw new Error('This encrypted link is invalid.');
+ const salt=base64UrlToBytes(envelope.salt),iv=base64UrlToBytes(envelope.iv),ciphertext=base64UrlToBytes(envelope.ct);
+ if(salt.length!==16||iv.length!==12||ciphertext.length<17)throw new Error('This encrypted link is incomplete or damaged.');
+ const key=await deriveEncryptionKey(passcode,salt);
+ const plaintext=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,ciphertext);
+ return JSON.parse(new TextDecoder().decode(plaintext));
+}
+function makePlayerUrl(envelope){
+ // Hash fragments are not sent to GitHub Pages' server, and work in project sites.
+ return location.href.split('#')[0]+'#/p/'+encodeObject(envelope);
+}
+function validatePayload(p){
+ return p&&(p.v===1||p.v===2||p.v===3)&&typeof p.group==='string'&&typeof p.name==='string'&&
+  typeof p.recipient==='string'&&Array.isArray(p.participants)&&p.participants.length>=2&&
+  p.participants.length<=100&&p.participants.every(n=>typeof n==='string')&&
+  p.participants.includes(p.name)&&p.participants.includes(p.recipient)&&p.name!==p.recipient&&
+  new Set(p.participants.map(n=>n.toLowerCase())).size===p.participants.length;
+}
+function renderShareRows(){
+ $('links').innerHTML='';
+ generatedLinks.forEach((p,i)=>{
+  const linkRow=document.createElement('div');linkRow.className='linkrow';linkRow.style.setProperty('--i',i);
+  const linkInput=document.createElement('input');linkInput.readOnly=true;linkInput.value=`${p.name} — ${p.url}`;
+  const linkButton=document.createElement('button');linkButton.className='copy';linkButton.textContent='COPY LINK';linkButton.onclick=()=>copy(p.url);
+  linkRow.append(linkInput,linkButton);$('links').append(linkRow);
+ });
+}
+async function create(){
+ $('hostError').textContent='';
+ const host=$('hostName').value.trim();
+ const group=$('group').value.trim()||'The Secret Santa Club';
+ const names=$('players').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+ if(!host){$('hostError').textContent='Add the host name first.';return}
+ if(names.length<2){$('hostError').textContent='Add at least two players (not counting the host).';return}
+ const all=$('hostPlays').checked?[host,...names]:names;
+ if(new Set(all.map(x=>x.toLowerCase())).size!==all.length){$('hostError').textContent='Names must be unique. Check for duplicates (including the host).';return}
+ if(all.length>100){$('hostError').textContent='Keep the exchange to 100 players or fewer.';return}
+ try{requireWebCrypto()}catch(e){$('hostError').textContent=e.message;return}
+ $('createBtn').disabled=true;$('createBtn').textContent='Securing the assignments…';
+ try{
+  const recipients=makeDerangement(all);
+  generatedLinks=[];
+  for(let i=0;i<all.length;i++){
+   $('createBtn').textContent=`Securing ${i+1} of ${all.length}…`;
+   const payload={v:3,group,name:all[i],recipient:recipients[i],participants:all};
+   const encrypted=await encryptPayload(payload);
+   generatedLinks.push({name:all[i],url:makePlayerUrl(encrypted)});
+  }
+  $('createdInfo').textContent=`${group} · ${all.length} participants · AES-256-GCM protected individual links · no passcodes.`;
+  renderRoster($('peopleList'),all);renderShareRows();show('createdView');
+ }catch(e){
+  $('hostError').textContent=e.message||'Could not encrypt the exchange. Please try again.';
+  console.error(e);
+ }finally{$('createBtn').disabled=false;$('createBtn').textContent='Create the chaos ↗'}
+}
+$('createBtn').addEventListener('click',create);
+$('copyAll').addEventListener('click',()=>copy(generatedLinks.map(p=>`${p.name}: ${p.url}`).join('\n')));
+
+let encryptedLink=null;
+let legacyAssignment=null;
+async function loadPlayer(){
+ const match=location.hash.match(/^#\/p\/([A-Za-z0-9_-]+)$/);
+ if(!match)return false;
+ show('playerView');
+ $('unlockError').textContent='';$('unlockedContent').classList.add('hidden');
+ $('revealBtn').classList.remove('hidden');$('revealBtn').disabled=true;
+ try{
+  const data=decodeObject(match[1]);
+  if(data&&data.v===3){
+   encryptedLink=data;legacyAssignment=null;
+   $('playerGroup').textContent='AES-256-GCM · PRIVATE LINK';
+   $('hello').textContent='Unlocking your Christmas surprise…';
+   $('unlockBox').classList.add('hidden');
+   const assignment=await decryptLinkEnvelope(data);
+   if(!validatePayload(assignment)||assignment.v!==3)throw new Error('The decrypted assignment is invalid.');
+   displayAssignment(assignment);
+   $('unlockedContent').classList.remove('hidden');
+   $('revealBtn').disabled=false;$('revealBtn').onclick=()=>openReveal(assignment.recipient);
+   return true;
+  }
+  if(data&&data.v===2){
+   encryptedLink=data;legacyAssignment=null;
+   $('playerGroup').textContent='OLDER · PASSCODE-PROTECTED LINK';
+   $('hello').textContent='A gift is waiting for you.';
+   $('unlockBox').classList.remove('hidden');$('passcodeInput').value='';
+   $('unlockBtn').disabled=false;$('unlockBtn').textContent='Unlock older assignment →';
+   $('unlockBtn').onclick=unlockPlayer;
+   return true;
+  }
+  // Previously generated v1 links remain usable, but were only Base64URL-encoded.
+  if(validatePayload(data)&&data.v===1){
+   legacyAssignment=data;encryptedLink=null;$('unlockBox').classList.add('hidden');
+   displayAssignment(data);
+   $('playerGroup').textContent='OLDER · UNENCRYPTED LINK';
+   $('unlockedContent').classList.remove('hidden');
+   $('revealBtn').disabled=false;$('revealBtn').onclick=()=>openReveal(data.recipient);
+   return true;
+  }
+  throw new Error('This link is not a valid SuttaSanta assignment.');
+ }catch(e){
+  console.error(e);
+  $('playerGroup').textContent='LINK NOT FOUND';
+  $('hello').textContent='This Santa link seems to be lost';
+  $('unlockBox').classList.add('hidden');$('unlockedContent').classList.add('hidden');
+  return true;
+ }
+}
+function displayAssignment(data){
+ $('playerGroup').textContent=data.group.toUpperCase();
+ $('hello').textContent=`Hey, ${data.name}.`;
+ renderRoster($('playerRoster'),data.participants);
+}
+async function unlockPlayer(){
+ const passcode=$('passcodeInput').value.trim().toUpperCase();
+ if(!passcode){$('unlockError').textContent='Enter the passcode your host shared with you.';return}
+ $('unlockBtn').disabled=true;$('unlockBtn').textContent='Decrypting…';$('unlockError').textContent='';
+ try{
+  const data=await decryptEnvelope(encryptedLink,passcode);
+  if(!validatePayload(data)||data.v!==2)throw new Error('The decrypted assignment is invalid.');
+  displayAssignment(data);$('unlockBox').classList.add('hidden');$('unlockedContent').classList.remove('hidden');
+  $('revealBtn').disabled=false;$('revealBtn').onclick=()=>openReveal(data.recipient);
+ }catch(e){
+  $('unlockError').textContent='That passcode did not unlock this link. Double-check it with your host.';
+  $('passcodeInput').select();
+ }finally{$('unlockBtn').disabled=false;$('unlockBtn').textContent='Unlock my assignment →'}
+}
+$('passcodeInput').addEventListener('keydown',e=>{if(e.key==='Enter')unlockPlayer()});
+loadPlayer().then(found=>{if(!found)show('hostView')});
+</script></body></html>
